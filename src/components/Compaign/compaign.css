@@ -1,0 +1,39 @@
+.searchSection {
+  margin-bottom: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+.paginationContainer {
+  margin-top: 8px;
+}
+
+.prevBtn {
+  margin-right: 10px;
+}
+
+.nextBtn {
+  margin-left: 10px;
+}
+
+.pageBtn {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 5px 8px;
+}
+
+.pageBtn:focus {
+  outline: 0;
+}
+
+.activePage {
+  background: skyblue !important;
+}
