@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 
-import { compaignData } from "../../mockData/compaignJson";
+import { getCompaignList } from "./helper";
 
 import "./compaign.css";
 
 export default () => {
+  // State section
   const [cPage, setCPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(
-    Math.floor(compaignData.length / 10)
-  );
   const [search, setSearch] = useState("");
 
+  // fetching API data based on the search
+  const { items, totalPages } = getCompaignList({
+    page: cPage,
+    query: search
+  });
+
   const handleNextPage = () => {
-    if (cPage !== totalPage) {
+    if (cPage !== totalPages) {
       setCPage(cPage + 1);
     }
   };
@@ -29,7 +33,7 @@ export default () => {
 
   const renderBtn = () => {
     const element = [];
-    for (let i = 0; i < totalPage; i++) {
+    for (let i = 0; i < totalPages; i++) {
       element.push(
         <button
           key={`pagination_btn_${i}`}
@@ -47,9 +51,17 @@ export default () => {
     setSearch(e.target.value);
   };
 
-  const handleSearch = () => {};
-
-  console.log("cPage", cPage, totalPage, compaignData.length, search);
+  const renderCompaignData = () => {
+    return items.map((compaign, index) => {
+      return (
+        <tr key={`compaign_${compaign._id}_${index}`}>
+          <td>{compaign.name}</td>
+          <td>{compaign.type}</td>
+          <td>{compaign.company}</td>
+        </tr>
+      );
+    });
+  };
 
   return (
     <>
@@ -60,9 +72,6 @@ export default () => {
           id={"compaignSearch"}
           onChange={handleSearchChange}
         />
-        <button disabled={search.length < 2} onClick={handleSearch}>
-          {"search"}
-        </button>
       </section>
       <table border={1}>
         <thead>
@@ -72,19 +81,7 @@ export default () => {
             <th>Company</th>
           </tr>
         </thead>
-        <tbody>
-          {compaignData
-            .slice(cPage * 10 - 10, 10 * cPage)
-            .map((compaign, index) => {
-              return (
-                <tr key={`compaign_${compaign._id}_${index}`}>
-                  <td>{compaign.name}</td>
-                  <td>{compaign.type}</td>
-                  <td>{compaign.company}</td>
-                </tr>
-              );
-            })}
-        </tbody>
+        <tbody>{renderCompaignData()}</tbody>
       </table>
       <div className={"paginationContainer"}>
         <button
@@ -96,7 +93,7 @@ export default () => {
         </button>
         {renderBtn()}
         <button
-          disabled={cPage === totalPage}
+          disabled={cPage === totalPages}
           onClick={handleNextPage}
           className={"nextBtn"}
         >
